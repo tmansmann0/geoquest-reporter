@@ -1,8 +1,17 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 import streamlit as st
+import time
 import os
 from fpdf import FPDF
+
+# Function to annotate bars with numbers
+def annotate_bars(ax):
+    for p in ax.patches:
+        ax.annotate(f'{int(p.get_height())}', 
+                    (p.get_x() + p.get_width() / 2., p.get_height()), 
+                    ha='center', va='center', fontsize=9, color='black', xytext=(0, 5), 
+                    textcoords='offset points')
 
 # Function to generate the PDF report
 def generate_pdf_report(df, output_pdf):
@@ -33,6 +42,15 @@ def generate_pdf_report(df, output_pdf):
     Number of Users with Lifetime Points but No Validated Quests: {users_with_no_validated_quests_but_lifetime_points}
     """
 
+    # Simulate complex progress
+    st.write("Initializing report generation...")
+    time.sleep(1)
+    st.write("Analyzing data...")
+    time.sleep(1)
+    st.write("Generating visual insights...")
+    time.sleep(2)
+    st.write("Compiling report...")
+
     # Create a PDF instance
     pdf = FPDF()
 
@@ -46,13 +64,14 @@ def generate_pdf_report(df, output_pdf):
     pdf.set_font('Arial', '', 12)
     pdf.multi_cell(0, 10, insights_text)
 
-    # Create and save the graphs
+    # Create and save the graphs with numbers on bars
     graph1_path = "lifetime_points_distribution.png"
-    plt.figure(figsize=(10, 6))
-    plt.hist(df['Lifetime Points'], bins=50, color='blue', alpha=0.7, edgecolor='black')
-    plt.title('Distribution of Lifetime Points (Granular)')
-    plt.xlabel('Lifetime Points')
-    plt.ylabel('Number of Users')
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.hist(df['Lifetime Points'], bins=50, color='blue', alpha=0.7, edgecolor='black')
+    ax.set_title('Distribution of Lifetime Points (Granular)')
+    ax.set_xlabel('Lifetime Points')
+    ax.set_ylabel('Number of Users')
+    annotate_bars(ax)
     plt.grid(True)
     plt.savefig(graph1_path)
     plt.close()
@@ -61,18 +80,19 @@ def generate_pdf_report(df, output_pdf):
     sizes = [users_with_lifetime_points, total_users - users_with_lifetime_points]
     labels = ['Users with Lifetime Points', 'Users without Lifetime Points']
     colors = ['#66b3ff', '#ff9999']
-    plt.figure(figsize=(6, 6))
-    plt.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90, explode=(0.1, 0), shadow=True)
-    plt.title('Users with and without Lifetime Points')
+    fig, ax = plt.subplots(figsize=(6, 6))
+    ax.pie(sizes, labels=labels, colors=colors, autopct='%1.1f%%', startangle=90, explode=(0.1, 0), shadow=True)
+    ax.set_title('Users with and without Lifetime Points')
     plt.savefig(graph2_path)
     plt.close()
 
     graph3_path = "validated_quests_distribution.png"
-    plt.figure(figsize=(10, 6))
-    plt.bar(df['Validated Quests'].value_counts().index, df['Validated Quests'].value_counts().values, color='purple', alpha=0.7, edgecolor='black')
-    plt.title('Distribution of Validated Quests')
-    plt.xlabel('Number of Validated Quests')
-    plt.ylabel('Number of Users')
+    fig, ax = plt.subplots(figsize=(10, 6))
+    ax.bar(df['Validated Quests'].value_counts().index, df['Validated Quests'].value_counts().values, color='purple', alpha=0.7, edgecolor='black')
+    ax.set_title('Distribution of Validated Quests')
+    ax.set_xlabel('Number of Validated Quests')
+    ax.set_ylabel('Number of Users')
+    annotate_bars(ax)
     plt.grid(True)
     plt.savefig(graph3_path)
     plt.close()
@@ -81,13 +101,7 @@ def generate_pdf_report(df, output_pdf):
     pdf.add_page()
     pdf.set_font('Arial', 'B', 14)
     pdf.cell(200, 10, txt="Visual Insights", ln=True, align='C')
-    pdf.ln(10)
-
-    # Insert Graph 1 (Lifetime Points Distribution)
-    pdf.add_page()
-    pdf.set_font('Arial', '', 12)
-    pdf.cell(0, 10, 'Distribution of Lifetime Points', ln=True)
-    pdf.image(graph1_path, x=10, y=30, w=180)
+    pdf.image(graph1_path, x=10, y=30, w=180)  # First graph on the same page as "Visual Insights"
 
     # Insert Graph 2 (Pie Chart: Users with/without Lifetime Points)
     pdf.add_page()
