@@ -37,14 +37,13 @@ def generate_pdf_report(df):
     Total Users: {total_users}
     Total Lifetime Points Awarded: {total_lifetime_points}
     Total Current Points Awarded: {total_current_points}
-    Number of Users with Lifetime Points > 0: {users_with_lifetime_points}
+    Number of Users with Points: {users_with_lifetime_points}
     Average Lifetime Points per User: {average_lifetime_points:.2f}
     Users with Current Points > 0: {users_with_current_points}
     Average Current Points (For Users with Points): {average_current_points_active_users:.2f}
     Max Lifetime Points Held by a User: {max_lifetime_points}
     Max Current Points Held by a User: {max_current_points}
     Total Validated Quests: {total_validated_quests}
-    Number of Users with Lifetime Points but No Validated Quests: {users_with_no_validated_quests_but_lifetime_points}
     """
 
     # Simulate complex progress
