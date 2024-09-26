@@ -13,6 +13,30 @@ def annotate_bars(ax):
                     ha='center', va='center', fontsize=9, color='black', xytext=(0, 5), 
                     textcoords='offset points')
 
+# Simulated console log style
+def console_log(message, delay=0.5):
+    st.markdown(
+        f"<div style='background-color:black;padding:10px'><p style='color:green'>{message}</p></div>", 
+        unsafe_allow_html=True)
+    time.sleep(delay)
+
+# Fake technical messages
+def fake_complex_processing():
+    fake_messages = [
+        "Loading system libraries...",
+        "Initializing rendering engine...",
+        "Compiling visual models...",
+        "Fetching system variables...",
+        "Generating data sets for processing...",
+        "Executing machine learning models...",
+        "Compressing large datasets...",
+        "Decrypting user data...",
+        "Running optimization algorithms...",
+        "Launching advanced analytics engine..."
+    ]
+    for msg in fake_messages:
+        console_log(msg, delay=1)
+
 # Function to generate the PDF report
 def generate_pdf_report(df, output_pdf):
     # Insights
@@ -43,13 +67,13 @@ def generate_pdf_report(df, output_pdf):
     """
 
     # Simulate complex progress
-    st.write("Initializing report generation...")
-    time.sleep(1)
-    st.write("Analyzing data...")
-    time.sleep(1)
-    st.write("Generating visual insights...")
-    time.sleep(2)
-    st.write("Compiling report...")
+    console_log("Initializing report generation...", 1)
+    fake_complex_processing()  # Show fake complex messages
+    console_log("Analyzing data...", 1)
+    fake_complex_processing()  # Show more fake messages
+    console_log("Generating visual insights...", 1)
+    fake_complex_processing()  # More fake messages
+    console_log("Compiling report...")
 
     # Create a PDF instance
     pdf = FPDF()
@@ -135,4 +159,3 @@ if uploaded_file:
         
         with open(output_pdf, "rb") as f:
             st.download_button("Download PDF Report", f, file_name=output_pdf)
-
