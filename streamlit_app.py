@@ -105,3 +105,37 @@ def generate_pdf_report(df):
     # Add the graphs to the PDF, each on its own page
     pdf.add_page()
     pdf.set_font('Arial', 'B', 14)
+    pdf.cell(200, 10, txt="Visual Insights", ln=True, align='C')
+    pdf.image(graph1_path, x=10, y=30, w=180)  # First graph on the same page as "Visual Insights"
+
+    # Insert Graph 2 (Pie Chart: Users with/without Lifetime Points)
+    pdf.add_page()
+    pdf.cell(0, 10, 'Users with and without Lifetime Points', ln=True)
+    pdf.image(graph2_path, x=40, y=30, w=120)
+
+    # Insert Graph 3 (Validated Quests Distribution)
+    pdf.add_page()
+    pdf.cell(0, 10, 'Distribution of Validated Quests', ln=True)
+    pdf.image(graph3_path, x=10, y=30, w=180)
+
+    # Save the report with the current date in the filename
+    pdf.output(output_pdf)
+
+    # Clean up the temporary image files
+    os.remove(graph1_path)
+    os.remove(graph2_path)
+    os.remove(graph3_path)
+
+# Streamlit UI
+st.title("Quest Points Insights Report Generator")
+
+uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
+if uploaded_file:
+    df = pd.read_csv(uploaded_file)
+    st.write("File uploaded successfully!")
+    
+    if st.button("Generate PDF Report"):
+        generate_pdf_report(df)
+        
+        with open(f"quest_points_insights_report_{datetime.now().strftime('%Y-%m-%d')}.pdf", "rb") as f:
+            st.download_button("Download PDF Report", f)
