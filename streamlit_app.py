@@ -4,6 +4,7 @@ import streamlit as st
 import time
 import os
 from fpdf import FPDF
+from datetime import datetime
 
 # Function to annotate bars with numbers
 def annotate_bars(ax):
@@ -13,33 +14,13 @@ def annotate_bars(ax):
                     ha='center', va='center', fontsize=9, color='black', xytext=(0, 5), 
                     textcoords='offset points')
 
-# Simulated console log style
-def console_log(message, delay=0.5):
-    st.markdown(
-        f"<div style='background-color:black;padding:10px'><p style='color:green'>{message}</p></div>", 
-        unsafe_allow_html=True)
-    time.sleep(delay)
-
-# Fake technical messages
-def fake_complex_processing():
-    fake_messages = [
-        "Loading system libraries...",
-        "Initializing rendering engine...",
-        "Compiling visual models...",
-        "Fetching system variables...",
-        "Generating data sets for processing...",
-        "Executing machine learning models...",
-        "Compressing large datasets...",
-        "Decrypting user data...",
-        "Running optimization algorithms...",
-        "Launching advanced analytics engine..."
-    ]
-    for msg in fake_messages:
-        console_log(msg, delay=1)
-
-# Function to generate the PDF report
-def generate_pdf_report(df, output_pdf):
-    # Insights
+# Function to generate the PDF report with date appended to the filename
+def generate_pdf_report(df):
+    # Get the current date to append to the filename
+    current_date = datetime.now().strftime("%Y-%m-%d")
+    output_pdf = f"quest_points_insights_report_{current_date}.pdf"
+    
+    # Insights (same as before)
     total_users = df.shape[0]
     total_lifetime_points = df['Lifetime Points'].sum()
     total_current_points = df['Current Points'].sum()
@@ -67,13 +48,13 @@ def generate_pdf_report(df, output_pdf):
     """
 
     # Simulate complex progress
-    console_log("Initializing report generation...", 1)
-    fake_complex_processing()  # Show fake complex messages
-    console_log("Analyzing data...", 1)
-    fake_complex_processing()  # Show more fake messages
-    console_log("Generating visual insights...", 1)
-    fake_complex_processing()  # More fake messages
-    console_log("Compiling report...")
+    st.write("Initializing report generation...")
+    time.sleep(1)
+    st.write("Analyzing data...")
+    time.sleep(1)
+    st.write("Generating visual insights...")
+    time.sleep(2)
+    st.write("Compiling report...")
 
     # Create a PDF instance
     pdf = FPDF()
@@ -124,38 +105,3 @@ def generate_pdf_report(df, output_pdf):
     # Add the graphs to the PDF, each on its own page
     pdf.add_page()
     pdf.set_font('Arial', 'B', 14)
-    pdf.cell(200, 10, txt="Visual Insights", ln=True, align='C')
-    pdf.image(graph1_path, x=10, y=30, w=180)  # First graph on the same page as "Visual Insights"
-
-    # Insert Graph 2 (Pie Chart: Users with/without Lifetime Points)
-    pdf.add_page()
-    pdf.cell(0, 10, 'Users with and without Lifetime Points', ln=True)
-    pdf.image(graph2_path, x=40, y=30, w=120)
-
-    # Insert Graph 3 (Validated Quests Distribution)
-    pdf.add_page()
-    pdf.cell(0, 10, 'Distribution of Validated Quests', ln=True)
-    pdf.image(graph3_path, x=10, y=30, w=180)
-
-    # Save the report
-    pdf.output(output_pdf)
-
-    # Clean up the temporary image files
-    os.remove(graph1_path)
-    os.remove(graph2_path)
-    os.remove(graph3_path)
-
-# Streamlit UI
-st.title("Quest Points Insights Report Generator")
-
-uploaded_file = st.file_uploader("Upload a CSV file", type=["csv"])
-if uploaded_file:
-    df = pd.read_csv(uploaded_file)
-    st.write("File uploaded successfully!")
-    
-    if st.button("Generate PDF Report"):
-        output_pdf = "quest_points_insights_report.pdf"
-        generate_pdf_report(df, output_pdf)
-        
-        with open(output_pdf, "rb") as f:
-            st.download_button("Download PDF Report", f, file_name=output_pdf)
