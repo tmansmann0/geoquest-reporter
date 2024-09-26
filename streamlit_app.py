@@ -125,6 +125,8 @@ def generate_pdf_report(df):
     os.remove(graph1_path)
     os.remove(graph2_path)
     os.remove(graph3_path)
+    
+    return output_pdf
 
 # Streamlit UI
 st.title("Quest Points Insights Report Generator")
@@ -135,7 +137,9 @@ if uploaded_file:
     st.write("File uploaded successfully!")
     
     if st.button("Generate PDF Report"):
-        generate_pdf_report(df)
+        # Generate the PDF report with the appended date
+        output_pdf = generate_pdf_report(df)
         
-        with open(f"quest_points_insights_report_{datetime.now().strftime('%Y-%m-%d')}.pdf", "rb") as f:
-            st.download_button("Download PDF Report", f)
+        # Open the file and ensure Streamlit serves it as a PDF
+        with open(output_pdf, "rb") as f:
+            st.download_button("Download PDF Report", f, file_name=output_pdf, mime="application/pdf")
